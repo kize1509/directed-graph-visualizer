@@ -97,17 +97,32 @@ class GraphVisualizer : Application() {
             }
         }
 
-        // Set up main layout
         root.left = leftControls
         root.center = graphView
 
 
-        // Final setup
         val scene = Scene(root, 900.0, 650.0)
         stage.scene = scene
         stage.title = "Graph Visualizer"
         stage.show()
 
+        loadMermaid()
+    }
+
+    private fun loadMermaid() {
+        webEngine.loadWorker.stateProperty().addListener { _, _, newState ->
+            if (newState == Worker.State.SUCCEEDED) {
+                statusLabel.text = "WebView loaded successfully"
+                isWebViewReady = true
+
+            } else if (newState == Worker.State.FAILED) {
+                statusLabel.text = "Failed to load WebView"
+                statusLabel.style = "-fx-text-fill: red;"
+            }
+        }
+
+
+        webEngine.load("../resources/static/index.html")
     }
 
 
