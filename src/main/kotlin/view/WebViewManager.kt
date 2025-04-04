@@ -6,6 +6,10 @@ import org.example.model.Graph
 import org.example.renderer.MermaidRenderer
 import java.io.File
 
+/*
+ * WebViewManager is responsible for managing the WebView component in the JavaFX application.
+ * It handles loading the HTML content, setting up the JavaScript bridge, and rendering graphs using the Mermaid library.
+ */
 class WebViewManager(private val webEngine: WebEngine) {
 
     private val resourceFile = File("src/main/resources/static/index.html")

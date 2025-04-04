@@ -1,6 +1,10 @@
 package org.example.model
 
-
+/*
+    Graph class represents a directed graph with vertices and edges.
+    It provides methods to parse input, toggle vertex states, and retrieve graph information.
+    The graph can be visualized using the Mermaid syntax.
+ */
 class Graph {
     private val vertices = mutableSetOf<String>()
     private val edges = mutableListOf<Edge>()
@@ -23,14 +27,11 @@ class Graph {
                     val parts = trimmedLine.split("->")
                     val from = parts[0].trim()
 
-                    // Check for incomplete edges
                     if (parts.size < 2 || parts[1].trim().isEmpty()) {
-                        // Still add the from node as a vertex if it exists
                         if (from.isNotEmpty()) {
                             vertices.add(from)
                         }
                     } else {
-                        // Complete edge
                         val to = parts[1].trim()
                         vertices.add(from)
                         vertices.add(to)
@@ -38,7 +39,6 @@ class Graph {
                         validEdgeCount++
                     }
                 } else {
-                    // Handle standalone vertex
                     vertices.add(trimmedLine)
                 }
             }

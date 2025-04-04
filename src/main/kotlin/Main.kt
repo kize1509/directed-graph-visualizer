@@ -10,7 +10,9 @@ import javafx.stage.Stage
 import org.example.controller.GraphController
 import org.example.view.WebViewManager
 
-
+/*
+    * GraphVisualizer is a JavaFX application that allows users to visualize graphs using the Mermaid library.
+ */
 class GraphVisualizer : Application() {
     private val graphInput = TextArea().apply {
         promptText = "Enter graph edges (one per line)\nFormat: NodeA -> NodeB"
