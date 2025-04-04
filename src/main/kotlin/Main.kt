@@ -10,8 +10,10 @@ import javafx.scene.paint.Color
 import javafx.scene.web.WebEngine
 import javafx.scene.web.WebView
 import javafx.stage.Stage
+import java.io.File
 
 class GraphVisualizer : Application() {
+    private val file = File("src/main/resources/static/index.html")
     private val graphInput = TextArea().apply {
         promptText = "Enter graph edges (one per line)\nFormat: NodeA -> NodeB"
         prefHeight = 200.0
@@ -29,7 +31,6 @@ class GraphVisualizer : Application() {
         style = "-fx-text-fill: gray; -fx-font-style: italic;"
     }
 
-    // function to start the main window and set up the event listeners
     override fun start(stage: Stage) {
         val root = BorderPane()
 
@@ -57,6 +58,7 @@ class GraphVisualizer : Application() {
             children.add(Button("Reset All Vertices").apply {
                 setOnAction {
                     disabledVertices.clear()
+
                 }
             })
         }
@@ -101,6 +103,7 @@ class GraphVisualizer : Application() {
         root.center = graphView
 
 
+
         val scene = Scene(root, 900.0, 650.0)
         stage.scene = scene
         stage.title = "Graph Visualizer"
@@ -114,6 +117,7 @@ class GraphVisualizer : Application() {
             if (newState == Worker.State.SUCCEEDED) {
                 statusLabel.text = "WebView loaded successfully"
                 isWebViewReady = true
+                setupJavaScriptBridge()
 
             } else if (newState == Worker.State.FAILED) {
                 statusLabel.text = "Failed to load WebView"
@@ -121,11 +125,36 @@ class GraphVisualizer : Application() {
             }
         }
 
-
-        webEngine.load("../resources/static/index.html")
+        webEngine.load(file.toURI().toString())
     }
 
+    private fun setupJavaScriptBridge() {
+        webEngine.executeScript("""
+            console.log = function(message) {
+                java.lang.System.out.println("JS Console: " + message);
+            };
+            console.error = function(message) {
+                java.lang.System.err.println("JS Error: " + message);
+            };
+        """.toString())
 
+        try {
+            val mermaidExists = webEngine.executeScript("typeof mermaid !== 'undefined'") as Boolean
+            println("Mermaid library available: $mermaidExists")
+
+            if (mermaidExists) {
+                val success = webEngine.executeScript("""
+                    renderGraph("flowchart LR\\nA-->B")
+                """) as Boolean
+                println("Initial test rendering: ${if (success) "succeeded" else "failed"}")
+                statusLabel.text = "Ready to visualize graphs"
+            }
+        } catch (e: Exception) {
+            println("Error during JavaScript bridge setup: ${e.message}")
+            statusLabel.text = "Error: ${e.message}"
+            statusLabel.style = "-fx-text-fill: red;"
+        }
+    }
 }
 
 fun main() {
