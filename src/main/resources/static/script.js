@@ -1,4 +1,3 @@
-// Initialize Mermaid with specific configuration
     mermaid.initialize({
         startOnLoad: true,
         theme: 'default',
@@ -10,21 +9,16 @@
         securityLevel: 'loose'
     });
 
-    // Function to be called from Java
     function renderGraph(definition) {
         try {
-            // For debugging
-            document.getElementById('debug-container').style.display = 'block';
-            document.getElementById('debug-container').textContent = 'Rendering: ' + definition;
+            document.getElementById('time-container').style.display = 'block';
+            document.getElementById('time-container').textContent = 'last update: ' + new Date().toLocaleString();
 
-            // Clear any previous errors
             document.getElementById('error-container').style.display = 'none';
 
-            // Insert the graph definition
             const container = document.getElementById('diagram-container');
             container.innerHTML = '<pre class="mermaid">' + definition + '</pre>';
 
-            // Render the graph
             mermaid.init(undefined, '.mermaid');
 
             return true;
